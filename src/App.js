@@ -1,6 +1,6 @@
 function App() {
   return (
-    <h1>This is app page</h1>
+    <h1>Dashboard page</h1>
   );
 }
 
