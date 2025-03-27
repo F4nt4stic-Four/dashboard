@@ -1,27 +1,24 @@
 import { createTheme } from "@mui/material";
 
 const theme = createTheme({
-    components: {
-        MuiCssBaseline: {
-            styleOverrides:
-                `
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: `
                     * {
                         margin: 0;
                         box-sizing: border-box;
                     }
                     html {
                         font-size: 62.5%;
-                        height: 100%;
-                    }
-                    body {
-                        height: 100%;
                     }
                     #root {
-                        height: 100%;
+                        height: 100vh;
+                        display: flex;
+                        flex-direction: column;
                     }
-                `
-        }
-    }
-})
+                `,
+    },
+  },
+});
 
 export default theme;
