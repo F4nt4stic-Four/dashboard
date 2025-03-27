@@ -6,7 +6,7 @@ export const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
           Quantum Dashboard
         </Typography>
       </Toolbar>
