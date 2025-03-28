@@ -38,8 +38,7 @@ export const Slider = ({
           </Typography>
         )}
         <Typography fontSize="1.8rem">
-          <strong>{value}</strong>
-          {unit}
+          <strong>{value}</strong> {unit}
         </Typography>
       </Stack>
       <MuiSlider
