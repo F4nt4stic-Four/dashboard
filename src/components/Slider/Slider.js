@@ -1,19 +1,21 @@
 import { Stack, Typography, Slider as MuiSlider } from "@mui/material";
-import { useState } from "react";
 import { getLabel } from "../../utils";
 
 export const Slider = ({
   label,
   unit,
   min,
+  id,
   step,
   max,
-  defaultValue = 0,
+  value,
   stateConfig,
+  onChange = null
 }) => {
-  const [value, setValue] = useState(defaultValue);
   const handleOnChange = (e) => {
-    setValue(e.target.value);
+    if (onChange && typeof onChange === 'function') {
+      onChange({ id, value: e.target.value })
+    }
   };
 
   return (
@@ -25,19 +27,19 @@ export const Slider = ({
         spacing={1}
         flexWrap="wrap"
       >
-        <Typography fontSize="1.8rem" fontWeight="bold">
+        <Typography fontWeight="bold">
           {label}
         </Typography>
         {stateConfig && (
           <Typography
             textAlign="center"
-            fontSize="1.8rem"
+           
             textTransform="capitalize"
           >
             {getLabel(stateConfig, value) || ""}
           </Typography>
         )}
-        <Typography fontSize="1.8rem">
+        <Typography>
           <strong>{value}</strong> {unit}
         </Typography>
       </Stack>
@@ -45,6 +47,7 @@ export const Slider = ({
         value={value}
         onChange={handleOnChange}
         aria-label="Default"
+        id={id}
         min={min}
         step={step}
         max={max}

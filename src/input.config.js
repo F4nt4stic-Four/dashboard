@@ -126,7 +126,7 @@ export const INPUT_CONFIGS = [
     heading: "Transport",
     sliders: [
       {
-        id: "enery_efficiency",
+        id: "enery_efficiency_transport",
         label: "Enery Efficiency",
         min: -1,
         step: 0.1,
@@ -140,7 +140,7 @@ export const INPUT_CONFIGS = [
         },
       },
       {
-        id: "electrification",
+        id: "electrification_transport",
         label: "Electrification",
         min: 0,
         step: 5,
@@ -159,7 +159,7 @@ export const INPUT_CONFIGS = [
     heading: "Building and Industry",
     sliders: [
       {
-        id: "enery_efficiency",
+        id: "enery_efficiency_building",
         label: "Enery Efficiency",
         min: -1,
         step: 0.1,
@@ -173,7 +173,7 @@ export const INPUT_CONFIGS = [
         },
       },
       {
-        id: "electrification",
+        id: "electrification_building",
         label: "Electrification",
         min: 0,
         step: 5,
