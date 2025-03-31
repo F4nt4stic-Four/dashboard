@@ -1,8 +1,11 @@
-import { Container, Grid2, Stack, Typography } from "@mui/material";
+import { useState } from "react";
+import { Box, Container, Grid2, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import { Header, Slider } from "./components";
 import { INPUT_CONFIGS } from "./input.config";
+import { Close, Tune } from "@mui/icons-material";
 
 function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   return (
     <>
       <Header />
@@ -14,10 +17,17 @@ function App() {
           overflow: "auto",
         }}
       >
-        <Grid2 container spacing={2} sx={{ height: "100%", overflow: "auto" }}>
+        <Grid2 container spacing={2} sx={{ height: "100%", overflow: "auto", position: "relative" }}>
+          <Box sx={{ position: "absolute", inset: 0, width: "fit-content", height: "fit-content", backgroundColor: "common.white", zIndex: "modal" }}>
+            <Tooltip title={isSidebarOpen ? 'Close' : "Configurations"}>
+              <IconButton onClick={() => setIsSidebarOpen(prev => !prev)}>
+                {isSidebarOpen ? <Close fontSize="large" color="error" /> : <Tune fontSize="large" color="primary" />}
+              </IconButton>
+            </Tooltip>
+          </Box>
           <Grid2
             size={{ xs: 12, md: 6, lg: 4 }}
-            sx={{ height: "100%", overflow: "auto", order: { xs: 1, md: 0 } }}
+            sx={{ height: "100%", overflow: "auto", order: { xs: 1, md: 0 }, width: isSidebarOpen ? "" : "0 !important", transition: "all 0.2s ease-in-out" }}
           >
             {INPUT_CONFIGS.map((config, index) => (
               <Stack
