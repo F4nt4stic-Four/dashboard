@@ -16,8 +16,7 @@ export const Header = () => {
         </Typography>
         <List sx={{ display: "flex" }}>
           <ListItem>
-            <Button color="common.white" sx={{
-            }}>Credits</Button>
+            <Button color="common.white" onClick={() => setOpen(true)}>Credits</Button>
 
           </ListItem>
           <ListItem>
@@ -33,7 +32,7 @@ export const Header = () => {
         </List>
       </Toolbar>
     </AppBar>
-    <Dialog maxWidth="lg" open={open} onClose={() => setOpen(false)} slotProps={{ paper: { sx: { width: "100%", p: 2 } } }}>
+    <Dialog maxWidth="none" open={open} onClose={() => setOpen(false)} slotProps={{ paper: { sx: { width: "auto", p: 2 } } }}>
       <Credits onClose={() => setOpen(false)} />
     </Dialog>
   </>
