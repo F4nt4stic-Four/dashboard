@@ -1,6 +1,6 @@
 import { LineChart } from "@mui/x-charts";
 import { generateTemperaturePrediction, normalizeToOneDigit } from "./units";
-import { Stack, Typography, Box, Button } from "@mui/material";
+import { Stack, Typography, Box, Button, Divider } from "@mui/material";
 import { CopyAll, RestartAlt, Share } from "@mui/icons-material";
 import { useRef, useState } from "react";
 
@@ -26,53 +26,73 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
     <Box sx={{ height: "100%", maxHeight: "50vh" }}>
       <Stack
         direction="row"
-        justifyContent="space-between"
+        spacing={1}
         alignItems="center"
-        spacing={2}
+        justifyContent="flex-end"
       >
-        <Stack direction="row" spacing={1}>
-          <Typography variant="h6">Temperature at the end will be</Typography>
-          <Typography variant="h6" color="primary">
+        <Button color="primary" variant="outlined" onClick={onShareHandler}>
+          {isCopied ? (
+            <>
+              <CopyAll /> Copied
+            </>
+          ) : (
+            <>
+              <Share /> share
+            </>
+          )}
+        </Button>
+        <Button color="error" onClick={onResetHandler}>
+          <RestartAlt />
+          Reset
+        </Button>
+      </Stack>
+      <Stack
+        spacing={4}
+        direction="row"
+        sx={{ height: "100%" }}
+        alignItems="center"
+      >
+        <Stack
+          spacing={1}
+          alignItems="center"
+          sx={{
+            p: 2,
+            minWidth: "25rem",
+            borderRadius: 2,
+            backgroundColor: "grey.100",
+          }}
+        >
+          <Typography variant="h4" color="primary">
             +
             {normalizeToOneDigit(
               generateTemperaturePrediction(
                 TIME_SERIES[TIME_SERIES.length - 1],
                 inputs,
               ),
-            )}{" "}
-            Celsius
-          </Typography>
-        </Stack>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <Button color="primary" variant="outlined" onClick={onShareHandler}>
-            {isCopied ? (
-              <>
-                <CopyAll /> Copied
-              </>
-            ) : (
-              <>
-                <Share /> share
-              </>
             )}
-          </Button>
-          <Button color="error" onClick={onResetHandler}>
-            <RestartAlt />
-            Reset
-          </Button>
+            <sup>
+              <sup>o</sup>C
+            </sup>
+          </Typography>
+          <Divider sx={{ width: "5rem" }} />
+          <Typography variant="h6">Temperature at the end will be</Typography>
         </Stack>
+        <LineChart
+          ref={chartRef}
+          xAxis={[{ data: TIME_SERIES }]}
+          series={[
+            {
+              data: TIME_SERIES.map((year) =>
+                generateTemperaturePrediction(year, inputs),
+              ),
+            },
+          ]}
+          sx={{
+            mx: "auto",
+            pl: 2,
+          }}
+        />
       </Stack>
-      <LineChart
-        ref={chartRef}
-        xAxis={[{ data: TIME_SERIES }]}
-        series={[
-          {
-            data: TIME_SERIES.map((year) =>
-              generateTemperaturePrediction(year, inputs),
-            ),
-          },
-        ]}
-        sx={{ mx: "auto" }}
-      />
     </Box>
   );
 };

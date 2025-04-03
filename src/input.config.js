@@ -110,7 +110,7 @@ export const INPUT_CONFIGS = [
         min: 0,
         step: 1,
         max: 250,
-        unit: "$/ton CO2",
+        unit: "$/ton CO<sub>2</sub>",
         stateConfig: {
           0: "status quo",
           5: "low",
