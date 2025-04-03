@@ -30,18 +30,9 @@ export const Slider = ({
         <Typography fontWeight="bold">
           {label}
         </Typography>
-        {stateConfig && (
-          <Typography
-            textAlign="center"
-           
-            textTransform="capitalize"
-          >
-            {getLabel(stateConfig, value) || ""}
-          </Typography>
-        )}
-        <Typography>
+        {/* <Typography>
           <strong>{value}</strong> {unit}
-        </Typography>
+        </Typography> */}
       </Stack>
       <MuiSlider
         value={value}
@@ -54,6 +45,15 @@ export const Slider = ({
         name={label}
         valueLabelDisplay="auto"
       />
+      {stateConfig && (
+          <Typography
+            textAlign="center"
+           
+            textTransform="capitalize"
+          >
+            {getLabel(stateConfig, value) || ""}
+          </Typography>
+        )}
     </Stack>
   );
 };

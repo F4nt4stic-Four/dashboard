@@ -9,10 +9,10 @@ export const Header = () => {
   const [open, setOpen] = useState(false)
 
   return (<>
-    <AppBar position="static">
+    <AppBar position="static" sx={{backgroundColor: "none"}}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Quantum Dashboard
+          Analytics Dashboard
         </Typography>
         <List sx={{ display: "flex" }}>
           <ListItem>
