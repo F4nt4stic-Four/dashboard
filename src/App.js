@@ -28,7 +28,7 @@ function App() {
     searchParams.forEach((value, key) => {
       sliderValuesFromParams[key] = value;
     });
-    setSliderValues({ ...sliderValues, ...sliderValuesFromParams });
+    setSliderValues(prev => ({...prev, ...sliderValuesFromParams}));
   }, []);
 
   const onSliderValueChangeHandler = ({ id, value }) => {

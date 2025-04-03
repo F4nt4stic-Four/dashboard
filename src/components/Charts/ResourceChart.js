@@ -48,7 +48,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
       </Stack>
       <Stack
         spacing={4}
-        direction="row"
+        direction="row-reverse"
         sx={{ height: "100%" }}
         alignItems="center"
       >
