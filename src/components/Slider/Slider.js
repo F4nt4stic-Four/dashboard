@@ -1,5 +1,6 @@
 import { Stack, Typography, Slider as MuiSlider } from "@mui/material";
 import { getLabel } from "../../utils";
+import { useSearchParams } from "react-router-dom";
 
 export const Slider = ({
   label,
@@ -10,11 +11,15 @@ export const Slider = ({
   max,
   value,
   stateConfig,
-  onChange = null
+  onChange = null,
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleOnChange = (e) => {
-    if (onChange && typeof onChange === 'function') {
-      onChange({ id, value: e.target.value })
+    searchParams.set(id, e.target.value);
+    setSearchParams(searchParams);
+    if (onChange && typeof onChange === "function") {
+      onChange({ id, value: e.target.value });
     }
   };
 
@@ -27,9 +32,7 @@ export const Slider = ({
         spacing={1}
         flexWrap="wrap"
       >
-        <Typography fontWeight="bold">
-          {label}
-        </Typography>
+        <Typography fontWeight="bold">{label}</Typography>
         {/* <Typography>
           <strong>{value}</strong> {unit}
         </Typography> */}
@@ -46,14 +49,10 @@ export const Slider = ({
         valueLabelDisplay="auto"
       />
       {stateConfig && (
-          <Typography
-            textAlign="center"
-           
-            textTransform="capitalize"
-          >
-            {getLabel(stateConfig, value) || ""}
-          </Typography>
-        )}
+        <Typography textAlign="center" textTransform="capitalize">
+          {getLabel(stateConfig, value) || ""}
+        </Typography>
+      )}
     </Stack>
   );
 };
