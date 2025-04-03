@@ -5,8 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches:
-    - 'feat*'
+    branches: [ "feat/config_options" ]
   pull_request:
     branches: [ "main" ]
 
