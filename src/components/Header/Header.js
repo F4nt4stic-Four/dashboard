@@ -13,7 +13,7 @@ export const Header = () => {
       <AppBar position="static" sx={{ backgroundColor: "none" }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Analytics Dashboard
+            Control Simulator
           </Typography>
           <List sx={{ display: "flex" }}>
             <ListItem>
