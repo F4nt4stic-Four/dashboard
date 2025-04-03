@@ -1,19 +1,26 @@
 import { Stack, Typography, Slider as MuiSlider } from "@mui/material";
-import { useState } from "react";
 import { getLabel } from "../../utils";
+import { useSearchParams } from "react-router-dom";
 
 export const Slider = ({
   label,
   unit,
   min,
+  id,
   step,
   max,
-  defaultValue = 0,
+  value,
   stateConfig,
+  onChange = null,
 }) => {
-  const [value, setValue] = useState(defaultValue);
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleOnChange = (e) => {
-    setValue(e.target.value);
+    searchParams.set(id, e.target.value);
+    setSearchParams(searchParams);
+    if (onChange && typeof onChange === "function") {
+      onChange({ id, value: e.target.value });
+    }
   };
 
   return (
@@ -25,33 +32,27 @@ export const Slider = ({
         spacing={1}
         flexWrap="wrap"
       >
-        <Typography fontSize="1.8rem" fontWeight="bold">
-          {label}
-        </Typography>
-        {stateConfig && (
-          <Typography
-            textAlign="center"
-            fontSize="1.8rem"
-            textTransform="capitalize"
-          >
-            {getLabel(stateConfig, value) || ""}
-          </Typography>
-        )}
-        <Typography fontSize="1.8rem">
-          <strong>{value}</strong>
-          {unit}
-        </Typography>
+        <Typography fontWeight="bold">{label}</Typography>
+        {/* <Typography>
+          <strong>{value}</strong> {unit}
+        </Typography> */}
       </Stack>
       <MuiSlider
         value={value}
         onChange={handleOnChange}
         aria-label="Default"
+        id={id}
         min={min}
         step={step}
         max={max}
         name={label}
         valueLabelDisplay="auto"
       />
+      {stateConfig && (
+        <Typography textAlign="center" textTransform="capitalize">
+          {getLabel(stateConfig, value) || ""}
+        </Typography>
+      )}
     </Stack>
   );
 };

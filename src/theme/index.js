@@ -8,9 +8,6 @@ const theme = createTheme({
                         margin: 0;
                         box-sizing: border-box;
                     }
-                    html {
-                        font-size: 62.5%;
-                    }
                     #root {
                         height: 100vh;
                         display: flex;

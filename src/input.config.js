@@ -110,7 +110,7 @@ export const INPUT_CONFIGS = [
         min: 0,
         step: 1,
         max: 250,
-        unit: "$/ton CO2",
+        unit: "$/ton CO<sub>2</sub>",
         stateConfig: {
           0: "status quo",
           5: "low",
@@ -126,7 +126,7 @@ export const INPUT_CONFIGS = [
     heading: "Transport",
     sliders: [
       {
-        id: "enery_efficiency",
+        id: "enery_efficiency_transport",
         label: "Enery Efficiency",
         min: -1,
         step: 0.1,
@@ -140,7 +140,7 @@ export const INPUT_CONFIGS = [
         },
       },
       {
-        id: "electrification",
+        id: "electrification_transport",
         label: "Electrification",
         min: 0,
         step: 5,
@@ -159,7 +159,7 @@ export const INPUT_CONFIGS = [
     heading: "Building and Industry",
     sliders: [
       {
-        id: "enery_efficiency",
+        id: "enery_efficiency_building",
         label: "Enery Efficiency",
         min: -1,
         step: 0.1,
@@ -173,7 +173,7 @@ export const INPUT_CONFIGS = [
         },
       },
       {
-        id: "electrification",
+        id: "electrification_building",
         label: "Electrification",
         min: 0,
         step: 5,
@@ -183,6 +183,120 @@ export const INPUT_CONFIGS = [
           0: "status quo",
           5: "subsidized",
           25: "highly subsidized",
+        },
+      },
+    ],
+  },
+  {
+    id: "growth",
+    heading: "Growth",
+    sliders: [
+      {
+        id: "population",
+        label: "Population",
+        min: 9,
+        max: 11.4,
+        step: 0.1,
+        unit: "billion people in 2100",
+        stateConfig: {
+          9: "lowest growth",
+          9.3: "low growth",
+          10: "status quo",
+          10.5: "high growth",
+          11.2: "highest growth",
+        },
+      },
+      {
+        id: "economic_growth",
+        label: "Economic Growth",
+        min: 0.5,
+        max: 2.5,
+        step: 0.1,
+        unit: "billion people in 2100",
+        stateConfig: {
+          0.5: "low growth",
+          1.2: "status quo",
+          1.9: "high growth",
+        },
+      },
+    ],
+  },
+  {
+    id: "carbon_dioxide_removal",
+    heading: "Carbon Dioxide Removal",
+    sliders: [
+      {
+        id: "nature_based",
+        label: "Nature Based",
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: "% of max potential",
+        stateConfig: {
+          0: "status quo",
+          15: "low growth",
+          40: "medium growth",
+          70: "high growth",
+        },
+      },
+      {
+        id: "technological",
+        label: "Technological",
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: "% of max potential",
+        stateConfig: {
+          0: "status quo",
+          15: "low growth",
+          40: "medium growth",
+          70: "high growth",
+        },
+      },
+    ],
+  },
+  {
+    id: "other_sources",
+    heading: "Other Sources of Greenhouse Gases",
+    sliders: [
+      {
+        id: "agriculture_emission",
+        label: "Agriculture Emission",
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: "% of potential reduction",
+        stateConfig: {
+          0: "status quo",
+          20: "reduced",
+          70: "highly reduced",
+        },
+      },
+      {
+        id: "waste_and_leakage",
+        label: "Waste and Leakage",
+        min: 0,
+        max: 100,
+        step: 1,
+        unit: "% of potential reduction",
+        stateConfig: {
+          0: "status quo",
+          20: "reduced",
+          70: "highly reduced",
+        },
+      },
+      {
+        id: "deforestation",
+        label: "Deforestation",
+        min: -10,
+        max: 1,
+        step: 0.1,
+        unit: "%/year",
+        stateConfig: {
+          "-10": "highly reduced",
+          "-4": "reduced",
+          "-1": "status quo",
+          0.2: "increased",
         },
       },
     ],
