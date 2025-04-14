@@ -54,7 +54,7 @@ function App() {
         }}
       >
         <ResourceChart inputs={sliderValues} onResetHandler={onResetHandler} />
-        <Grid2 container spacing={2} sx={{ mt: 2 }}>
+        <Grid2 container spacing={2} sx={{ mt: 6 }}>
           {INPUT_CONFIGS.map((config) => (
             <Grid2
               key={config.id}
