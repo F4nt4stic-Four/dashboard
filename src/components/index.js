@@ -1,3 +1,3 @@
 export * from "./Header";
 export * from "./Slider";
-export * from './Charts'
+export * from "./Charts";

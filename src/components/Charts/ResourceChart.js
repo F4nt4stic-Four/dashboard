@@ -1,4 +1,10 @@
-import { generateTemperaturePrediction, normalizeToOneDigit } from "./units";
+import {
+  generateData,
+  generateKeyIdPair,
+  generateTemperaturePrediction,
+  normalizeToOneDigit,
+  TIME_SERIES,
+} from "./units";
 import {
   Stack,
   Typography,
@@ -16,6 +22,7 @@ import {
   Download,
   RestartAlt,
   Share,
+  Upload,
 } from "@mui/icons-material";
 import { useRef, useState } from "react";
 import {
@@ -29,8 +36,8 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { INPUT_CONFIGS } from "../../input.config";
 import { convertJSONtoCSV } from "../../utils";
+import { UploadFile } from "./UploadFile";
 
 ChartJS.register(
   CategoryScale,
@@ -54,32 +61,32 @@ export const options = {
   },
 };
 
-const TIME_SERIES = [2025, 2050, 2075, 2100, 2125, 2150];
-
 export const ResourceChart = ({ inputs, onResetHandler }) => {
   const chartRef = useRef(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [chartData, setChartData] = useState([]);
   const [chartTheme, setChartTheme] = useState({
     borderColor: "#ff6384",
     backgroundColor: "#ff6384",
   });
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-
   const data = {
     labels: TIME_SERIES,
     datasets: [
       {
-        label: "Temperature",
-        data: TIME_SERIES.map((year) =>
-          generateTemperaturePrediction(year, inputs),
-        ),
+        label: "Current Temp",
+        data: generateData(TIME_SERIES, inputs),
         borderColor: chartTheme.borderColor,
         backgroundColor: chartTheme.backgroundColor,
-        borderJoinStyle: "round",
-        borderCapStyle: "round",
-        tension: 0.4,
       },
-    ],
+      ...chartData,
+    ].map((dataset) => ({
+      ...dataset,
+      borderJoinStyle: "round",
+      borderCapStyle: "round",
+      tension: 0.4,
+    })),
   };
 
   const onShareHandler = () => {
@@ -95,14 +102,19 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
   };
 
   const onConfigDownloadHandler = () => {
-    const configData = {}
-    INPUT_CONFIGS.forEach(config => {
-      const { heading } = config;
-      config.sliders.forEach(slider => {
-        configData[`${heading}-${slider.label}`] = inputs[slider.id]
-      })
-    })
-    const csv = convertJSONtoCSV(configData);
+    const configData = {};
+    const dictionary = generateKeyIdPair();
+    Object.keys(dictionary).forEach((key) => {
+      configData[key] = inputs[dictionary[key]];
+    });
+    const fileData = chartData.map(({ inputs: data }) => {
+      const chartData = {};
+      Object.keys(dictionary).forEach((key) => {
+        chartData[key] = data[dictionary[key]];
+      });
+      return chartData;
+    });
+    const csv = convertJSONtoCSV(configData, ...fileData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
@@ -112,7 +124,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
+  };
 
   const onChartDownloadhandler = () => {
     const canvas = chartRef.current?.canvas;
@@ -134,7 +146,8 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
           spacing={2}
         >
           <Button color="primary" onClick={() => setIsThemeModalOpen(true)}>
-            <ColorLens />Change Theme
+            <ColorLens />
+            Change Theme
           </Button>
           <Stack
             direction="row"
@@ -142,7 +155,15 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
             alignItems="center"
             justifyContent="flex-end"
           >
-            <Button variant="outlined" onClick={onConfigDownloadHandler}><Download /> Download Configurations</Button>
+            <Button
+              variant="outlined"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              <Upload /> Upload File
+            </Button>
+            <Button variant="outlined" onClick={onConfigDownloadHandler}>
+              <Download /> Download Configurations
+            </Button>
             <Button
               color="primary"
               variant="outlined"
@@ -216,7 +237,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
           alignItems="center"
           spacing={2}
         >
-          <Typography variant="h4" color="primary">
+          <Typography variant="h5" color="primary">
             Chart Theme
           </Typography>
           <IconButton color="error" onClick={() => setIsThemeModalOpen(false)}>
@@ -247,6 +268,20 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
             }}
           />
         </Stack>
+      </Dialog>
+      <Dialog
+        maxWidth="none"
+        open={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        slotProps={{ paper: { sx: { width: "auto" } } }}
+      >
+        <UploadFile
+          onClose={() => setIsUploadModalOpen(false)}
+          setDataHandler={(data) => {
+            setChartData(data);
+            setIsUploadModalOpen(false);
+          }}
+        />
       </Dialog>
     </>
   );
