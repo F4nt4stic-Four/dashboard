@@ -29,6 +29,8 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { INPUT_CONFIGS } from "../../input.config";
+import { convertJSONtoCSV } from "../../utils";
 
 ChartJS.register(
   CategoryScale,
@@ -92,6 +94,26 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
       });
   };
 
+  const onConfigDownloadHandler = () => {
+    const configData = {}
+    INPUT_CONFIGS.forEach(config => {
+      const { heading } = config;
+      config.sliders.forEach(slider => {
+        configData[`${heading}-${slider.label}`] = inputs[slider.id]
+      })
+    })
+    const csv = convertJSONtoCSV(configData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "configuration.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   const onChartDownloadhandler = () => {
     const canvas = chartRef.current?.canvas;
     if (!canvas) return;
@@ -120,6 +142,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
             alignItems="center"
             justifyContent="flex-end"
           >
+            <Button variant="outlined" onClick={onConfigDownloadHandler}><Download /> Download Configurations</Button>
             <Button
               color="primary"
               variant="outlined"
