@@ -1,6 +1,5 @@
 import {
   generateData,
-  generateKeyIdPair,
   generateTemperaturePrediction,
   normalizeToOneDigit,
   TIME_SERIES,
@@ -14,6 +13,8 @@ import {
   Dialog,
   IconButton,
   TextField,
+  LinearProgress,
+  InputBase,
 } from "@mui/material";
 import {
   Close,
@@ -36,8 +37,12 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { convertJSONtoCSV } from "../../utils";
-import { UploadFile } from "./UploadFile";
+import {
+  convertJSONtoCSV,
+  getRandomLightColor,
+  parseCSVtoJSON,
+} from "../../utils";
+import { INPUT_CONFIGS } from "../../input.config";
 
 ChartJS.register(
   CategoryScale,
@@ -71,7 +76,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
     backgroundColor: "#ff6384",
   });
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
-  const data = {
+  const lineChartData = {
     labels: TIME_SERIES,
     datasets: [
       {
@@ -89,6 +94,63 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
     })),
   };
 
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+
+  const onFileUploadHandler = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.type !== "text/csv") {
+      alert("Please upload a valid CSV file");
+      event.target.value = "";
+      return;
+    }
+    setLoading(true);
+    const { data } = await parseCSVtoJSON(file);
+    setData(data);
+    setLoading(false);
+  };
+
+  const onTemplateDownloadHandler = () => {
+    const configData = {};
+    INPUT_CONFIGS.forEach((config) => {
+      const { heading } = config;
+      config.sliders.forEach(({ id, label }) => {
+        configData[`${heading}-${label}`] = "";
+      });
+    });
+    const csv = convertJSONtoCSV(configData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "configuration-template.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const onProcessFileData = () => {
+    const chartData = data.map((chartData, index) => {
+      const dataPoints = {};
+      INPUT_CONFIGS.forEach((config) => {
+        config.sliders.forEach(({ id, label }) => {
+          dataPoints[id] = +chartData[`${config.heading}-${label}`];
+        });
+      });
+      return {
+        label: `Row-${index + 1}`,
+        data: generateData(TIME_SERIES, dataPoints),
+        inputs: dataPoints,
+        borderColor: getRandomLightColor(),
+        backgroundColor: getRandomLightColor(),
+      };
+    });
+    setChartData(chartData);
+    setIsUploadModalOpen(false);
+  };
+
   const onShareHandler = () => {
     const currentURL = window.location.href; // Get the full URL
     navigator.clipboard
@@ -103,14 +165,19 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
 
   const onConfigDownloadHandler = () => {
     const configData = {};
-    const dictionary = generateKeyIdPair();
-    Object.keys(dictionary).forEach((key) => {
-      configData[key] = inputs[dictionary[key]];
+    INPUT_CONFIGS.forEach((config) => {
+      const { heading } = config;
+      config.sliders.forEach(({ id, label }) => {
+        configData[`${heading}-${label}`] = inputs[id];
+      });
     });
     const fileData = chartData.map(({ inputs: data }) => {
       const chartData = {};
-      Object.keys(dictionary).forEach((key) => {
-        chartData[key] = data[dictionary[key]];
+      INPUT_CONFIGS.forEach((config) => {
+        const { heading } = config;
+        config.sliders.forEach(({ id, label }) => {
+          chartData[`${heading}-${label}`] = data[id];
+        });
       });
       return chartData;
     });
@@ -222,7 +289,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
             <Typography variant="h6">Temperature at the end will be</Typography>
           </Stack>
           <Box sx={{ position: "relative", width: "100%" }}>
-            <Line ref={chartRef} options={options} data={data} />
+            <Line ref={chartRef} options={options} data={lineChartData} />
           </Box>
         </Stack>
       </Box>
@@ -275,13 +342,52 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
         onClose={() => setIsUploadModalOpen(false)}
         slotProps={{ paper: { sx: { width: "auto" } } }}
       >
-        <UploadFile
-          onClose={() => setIsUploadModalOpen(false)}
-          setDataHandler={(data) => {
-            setChartData(data);
-            setIsUploadModalOpen(false);
-          }}
-        />
+        {loading && <LinearProgress />}
+        <Box sx={{ p: 2 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={2}
+          >
+            <Typography variant="h5" color="primary">
+              Upload Configuration File
+            </Typography>
+            <IconButton
+              color="error"
+              onClick={() => setIsUploadModalOpen(false)}
+            >
+              <Close />
+            </IconButton>
+          </Stack>
+          <Button
+            variant="outlined"
+            size="small"
+            sx={{ mt: 4 }}
+            onClick={onTemplateDownloadHandler}
+          >
+            <Download /> Template
+          </Button>
+          <Stack direction="row" alignItems="center" spacing={2} sx={{ mt: 2 }}>
+            <Typography>Upload CSV File</Typography>
+            <InputBase
+              type="file"
+              accept=".csv,text/csv"
+              onChange={onFileUploadHandler}
+            />
+          </Stack>
+          <Box sx={{ mt: 4, textAlign: "right" }}>
+            <Button
+              disabled={!data}
+              color="success"
+              size="small"
+              variant="contained"
+              onClick={onProcessFileData}
+            >
+              Generate Chart
+            </Button>
+          </Box>
+        </Box>
       </Dialog>
     </>
   );
