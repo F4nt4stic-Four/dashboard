@@ -1,3 +1,5 @@
+import { INPUT_CONFIGS } from "../../input.config";
+
 export function generateTemperaturePrediction(year, inputs) {
   const {
     coal,
@@ -69,3 +71,14 @@ export function generateData(TIME_SERIES, inputs) {
 }
 
 export const TIME_SERIES = [2025, 2050, 2075, 2100, 2125, 2150];
+
+export const generateKeyIdPair = () => {
+  const dictionary = {};
+  INPUT_CONFIGS.forEach((config) => {
+    const { heading } = config;
+    config.sliders.forEach(({ id, label }) => {
+      dictionary[`${heading}-${label}`] = id;
+    });
+  });
+  return dictionary;
+};
