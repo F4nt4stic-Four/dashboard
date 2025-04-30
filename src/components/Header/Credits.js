@@ -84,7 +84,6 @@ export const Credits = ({ onClose }) => {
           </Box>
         </Tooltip>
       </Stack>
-      <Typography variant="h5">Fantastic 4 Team Members</Typography>
     </>
   );
 };

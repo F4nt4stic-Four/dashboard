@@ -1,6 +1,28 @@
 import { INPUT_CONFIGS } from "../../input.config";
 
-export function generateTemperaturePrediction(year, inputs) {
+function evaluateAndSum(year, customInputValues, customEquations) {
+  let sum = 0;
+
+  for (const key in customEquations) {
+    try {
+      const equation = customEquations[key];
+      const input_value = customInputValues[key];
+      const fn = new Function("input_value", "year", `return ${equation};`);
+      const result = fn(input_value, year);
+      sum += Number(result) || 0; // Safely add numeric value, ignore NaN
+    } catch (err) {
+      console.error(`Error in equation for ${key}:`, err);
+    }
+  }
+
+  return sum;
+}
+
+export function generateTemperaturePrediction(
+  year,
+  inputs,
+  customEquations = {},
+) {
   const {
     coal,
     renewabled,
@@ -21,10 +43,17 @@ export function generateTemperaturePrediction(year, inputs) {
     agriculture_emission,
     waste_and_leakage,
     deforestation,
+    ...customInputs
   } = inputs;
 
   // Normalize the year (2025 is 0, 2125 is 100)
   const t = year - 2025;
+
+  const customValueResultValue = evaluateAndSum(
+    year,
+    customInputs,
+    customEquations,
+  );
 
   // Prevent invalid operations (e.g., log(0), sqrt(-x))
   const safeLog = (x) => (x > 0 ? Math.log(1 + x) : 0);
@@ -51,7 +80,8 @@ export function generateTemperaturePrediction(year, inputs) {
     0.6 * technological -
     0.5 * agriculture_emission -
     0.5 * waste_and_leakage -
-    0.7 * deforestation;
+    0.7 * deforestation +
+    customValueResultValue;
 
   return y;
 }
@@ -66,8 +96,10 @@ export function normalizeToOneDigit(value) {
   return scaledValue;
 }
 
-export function generateData(TIME_SERIES, inputs) {
-  return TIME_SERIES.map((year) => generateTemperaturePrediction(year, inputs));
+export function generateData(TIME_SERIES, inputs, customEquations = {}) {
+  return TIME_SERIES.map((year) =>
+    generateTemperaturePrediction(year, inputs, customEquations),
+  );
 }
 
 export const TIME_SERIES = [2025, 2050, 2075, 2100, 2125, 2150];

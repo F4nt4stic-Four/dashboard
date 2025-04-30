@@ -51,7 +51,7 @@ export const options = {
   },
 };
 
-export const ResourceChart = ({ inputs, onResetHandler }) => {
+export const ResourceChart = ({ inputs, customEquations, onResetHandler }) => {
   const chartRef = useRef(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [chartData, setChartData] = useState([]);
@@ -65,7 +65,7 @@ export const ResourceChart = ({ inputs, onResetHandler }) => {
     datasets: [
       {
         label: "Current Temp",
-        data: generateData(TIME_SERIES, inputs),
+        data: generateData(TIME_SERIES, inputs, customEquations),
         borderColor: chartTheme.borderColor,
         backgroundColor: chartTheme.backgroundColor,
       },

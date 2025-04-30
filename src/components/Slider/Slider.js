@@ -17,7 +17,9 @@ export const Slider = ({
 
   const handleOnChange = (e) => {
     searchParams.set(id, e.target.value);
-    setSearchParams(searchParams);
+    if (!id.startsWith("custom_")) {
+      setSearchParams(searchParams);
+    }
     if (onChange && typeof onChange === "function") {
       onChange({ id, value: e.target.value });
     }
