@@ -51,13 +51,13 @@ const isValidEquation = (equation) => {
 
 export const InputModal = ({ existingLables = [], onClose, onAddInput }) => {
   const [input, setInput] = useState({
-    label: "",
-    min: "",
-    max: "",
-    step: "",
-    defaultValue: "",
-    unit: "",
-    equation: "2.5 * input_value + 0.2 * year",
+    label: "Custom Input",
+    min: "0",
+    max: "100",
+    step: "1",
+    defaultValue: "20",
+    unit: "unit",
+    equation: "10 * Math.log10(input_value + 1) * (1 + 0.5 * Math.sin((2 * Math.PI * (year - 2025)) / 100))",
   });
   const [error, setError] = useState(null);
   console.log(existingLables);
