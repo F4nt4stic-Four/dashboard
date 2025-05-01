@@ -57,7 +57,7 @@ export const InputModal = ({ existingLables = [], onClose, onAddInput }) => {
     step: "",
     defaultValue: "",
     unit: "",
-    equation: "",
+    equation: "2.5 * input_value + 0.2 * year",
   });
   const [error, setError] = useState(null);
   console.log(existingLables);
